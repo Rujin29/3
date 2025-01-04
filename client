@@ -1,0 +1,100 @@
+import requests
+from requests.auth import HTTPBasicAuth
+
+# Основні дані для доступу до API
+BASE_URL = "http://127.0.0.1:5000"
+USERNAME = "admin"
+PASSWORD = "password123"
+
+
+def get_catalog():
+    """
+    Зчитування всього каталогу товарів.
+    """
+    response = requests.get(f"{BASE_URL}/items", auth=HTTPBasicAuth(USERNAME, PASSWORD))
+    if response.status_code == 200:
+        print("Catalog retrieved successfully!")
+        print(response.json())
+    else:
+        print(f"Failed to retrieve catalog. Status code: {response.status_code}")
+        print(response.json())
+
+
+def get_item(item_id):
+    """
+    Зчитування конкретного товару за ID.
+    """
+    response = requests.get(f"{BASE_URL}/items/{item_id}", auth=HTTPBasicAuth(USERNAME, PASSWORD))
+    if response.status_code == 200:
+        print(f"Item {item_id} retrieved successfully!")
+        print(response.json())
+    else:
+        print(f"Failed to retrieve item {item_id}. Status code: {response.status_code}")
+        print(response.json())
+
+
+def add_item(name, price, color):
+    """
+    Додавання нового товару.
+    """
+    payload = {
+        "name": name,
+        "price": price,
+        "color": color
+    }
+    response = requests.post(f"{BASE_URL}/items", json=payload, auth=HTTPBasicAuth(USERNAME, PASSWORD))
+    if response.status_code == 201:
+        print("Item added successfully!")
+        print(response.json())
+    else:
+        print(f"Failed to add item. Status code: {response.status_code}")
+        print(response.json())
+
+
+def update_item(item_id, name, price, color):
+    """
+    Оновлення існуючого товару за його ID.
+    """
+    payload = {
+        "name": name,
+        "price": price,
+        "color": color
+    }
+    response = requests.put(f"{BASE_URL}/items/{item_id}", json=payload, auth=HTTPBasicAuth(USERNAME, PASSWORD))
+    if response.status_code == 200:
+        print(f"Item {item_id} updated successfully!")
+        print(response.json())
+    else:
+        print(f"Failed to update item {item_id}. Status code: {response.status_code}")
+        print(response.json())
+
+
+def delete_item(item_id):
+    """
+    Видалення товару за його ID.
+    """
+    response = requests.delete(f"{BASE_URL}/items/{item_id}", auth=HTTPBasicAuth(USERNAME, PASSWORD))
+    if response.status_code == 200:
+        print(f"Item {item_id} deleted successfully!")
+        print(response.json())
+    else:
+        print(f"Failed to delete item {item_id}. Status code: {response.status_code}")
+        print(response.json())
+
+
+# Приклад виклику функцій
+if __name__ == "__main__":
+    # Отримати весь каталог
+    get_catalog()
+
+    # Додати новий товар
+    add_item(name="Table", price=150, color="brown")
+
+    # Перевірити створений товар (зазвичай товару буде присвоєно новий ID, наприклад 4)
+    get_item(item_id=4)
+
+    # Оновити товар (з ID = 4)
+    update_item(item_id=4, name="Updated Table", price=180, color="dark brown")
+
+    # Видалити товар (з ID = 4)
+    delete_item(item_id=4)
